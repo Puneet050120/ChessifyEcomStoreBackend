@@ -3,8 +3,8 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 
 const router = require('./routes');
-// const errorMiddleware = require('./middlewares/error.middleware');
-// const requestContextMiddleware = require('./middlewares/request-context.middleware');
+const errorMiddleware = require('./middlewares/error.middleware');
+const requestContextMiddleware = require('./middlewares/request-context.middleware');
 
 dotenv.config();
 const app = express();
@@ -19,7 +19,7 @@ app.use(express.json());
 
 // Health check
 app.get('/healthz', (req, res) => {
-  req.log.info('Health check hit'); // Use req.log instead of logger
+  // req.log.info('Health check hit'); // Use req.log instead of logger
   res.json({ message: 'Server is up' });
 });
 
