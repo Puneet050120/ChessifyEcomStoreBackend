@@ -4,9 +4,9 @@
 
 ## 🚀 Project Structure
 
-📦 project-root/
-├── 📂src/
-│   ├── 📂controllers/       
+📦 project-root/                                                           
+├── 📂src/                                               
+│   ├── 📂controllers/                              
 │   ├── 📂models/            
 │   ├── 📂routes/            
 │   ├── 📂services/          
