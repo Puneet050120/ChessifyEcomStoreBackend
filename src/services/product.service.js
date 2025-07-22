@@ -36,6 +36,32 @@ class ProductService {
         return result;
     }
   }
+  
+  static async updateProduct(id, data) {
+    const updatedData = {
+      ...data,
+      price: data.price ? parseFloat(data.price) : undefined,
+      stock: data.stock ? parseInt(data.stock) : undefined,
+      updatedAt: new Date(),
+      updatedBy: data.updatedBy || 'admin',
+    };
+
+    return await prisma.product.update({
+      where: { id },
+      data: updatedData,
+    });
+  }
+
+  static async deleteProduct(id, updatedBy = 'admin') {
+    return await prisma.product.update({
+      where: { id },
+      data: {
+        active: false,
+        updatedAt: new Date(),
+        updatedBy,
+      },
+    });
+  }
 
 }
 

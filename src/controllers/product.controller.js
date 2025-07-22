@@ -34,3 +34,36 @@ exports.createProduct = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error' });
   }
 };
+
+exports.updateProduct = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const data = req.body;
+
+    if (isNaN(id)) {
+      return res.status(400).json({ success: false, message: 'Invalid product ID' });
+    }
+
+    const updatedProduct = await ProductService.updateProduct(id, data);
+    res.json({ success: true, data: updatedProduct });
+  } catch (error) {
+    console.error('Error updating product:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+exports.deleteProduct = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      return res.status(400).json({ success: false, message: 'Invalid product ID' });
+    }
+
+    await ProductService.softDeleteProduct(id);
+    res.json({ success: true, message: 'Product deleted (soft)' });
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
