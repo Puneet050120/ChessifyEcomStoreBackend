@@ -1,0 +1,30 @@
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: clothify-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: clothify
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  clothify-app:
+    build: .
+    container_name: clothify-backend
+    restart: always
+    depends_on:
+      - mysql
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    command: sh -c "npx prisma generate && npx prisma migrate dev --name init && pm2-runtime ecosystem.config.js"
+    env_file:
+      - .env
+
+volumes:
+  mysql_data:
