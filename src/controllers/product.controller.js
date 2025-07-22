@@ -60,7 +60,7 @@ exports.deleteProduct = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Invalid product ID' });
     }
 
-    await ProductService.softDeleteProduct(id);
+    await ProductService.deleteProduct(id);
     res.json({ success: true, message: 'Product deleted (soft)' });
   } catch (error) {
     console.error('Error deleting product:', error);
