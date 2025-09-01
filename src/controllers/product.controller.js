@@ -18,10 +18,10 @@ exports.createProduct = async (req, res) => {
 
     // Basic validation
     for (const product of productsArray) {
-      if (!product.name || !product.price || !product.category) {
+      if (!product.name || !product.price || !product.size) {
         return res.status(400).json({
           success: false,
-          message: 'Each product must have name, price, and category.',
+          message: 'Each product must have name, price, and size.',
         });
       }
     }
@@ -33,7 +33,7 @@ exports.createProduct = async (req, res) => {
     console.error('Error creating product(s):', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
-};
+}; 
 
 exports.updateProduct = async (req, res) => {
   try {
@@ -65,5 +65,22 @@ exports.deleteProduct = async (req, res) => {
   } catch (error) {
     console.error('Error deleting product:', error);
     res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+exports.bulkUploadProducts = async (req, res) => {
+  try {
+    const payload = req.body;
+
+    if (!Array.isArray(payload) || !payload.length) {
+      return res.status(400).json({ success: false, message: 'CSV payload must be a non-empty array' });
+    }
+
+    const result = await ProductService.bulkUpload(payload);
+    return res.status(201).json({ success: true, ...result });
+
+  } catch (error) {
+    console.error('Bulk upload error:', error);
+    return res.status(500).json({ success: false, message: error.message || 'Server error' });
   }
 };
