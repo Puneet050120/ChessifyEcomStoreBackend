@@ -22,6 +22,7 @@ class ProductService {
         createdAt: timestamp,
         updatedAt: timestamp,
         updatedBy: product.updatedBy || 'admin',
+        categoryId: parseInt(product.categoryId),
     }));
 
     if (normalizedProducts.length == 1) {
@@ -44,6 +45,7 @@ class ProductService {
       stock: data.stock ? parseInt(data.stock) : undefined,
       updatedAt: new Date(),
       updatedBy: data.updatedBy || 'admin',
+      categoryId: data.categoryId ? parseInt(data.categoryId) : undefined,
     };
 
     return await prisma.product.update({
@@ -68,8 +70,8 @@ class ProductService {
 
     const normalized = products
       .map((product) => {
-        const { name, price, stock, size } = product;
-        if (!name || !price || !stock || !size) return null;
+        const { name, price, stock, size, categoryId } = product;
+        if (!name || !price || !stock || !size || !categoryId) return null;
 
         return {
           name: name.trim(),
@@ -78,7 +80,7 @@ class ProductService {
           stock: parseInt(stock),
           size: size.toUpperCase(),
           color: product.color?.trim() || null,
-          category: product.category?.trim() || null,
+          categoryId: parseInt(categoryId),
           imageUrl: product.imageUrl?.trim() || null,
           active: true,
           createdAt: timestamp,

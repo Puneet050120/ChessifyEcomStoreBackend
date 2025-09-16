@@ -15,7 +15,6 @@ model Product {
   stock       Int
   size        String   // e.g., S, M, L, XL
   color       String?
-  category    String?
   imageUrl    String?
 
   createdAt   DateTime @default(now())
@@ -23,6 +22,9 @@ model Product {
   updatedBy   String?
   active      Boolean  @default(true)
   user        User?    @relation(fields: [updatedBy], references: [id])
+
+  categoryId  Int
+  category    Category @relation(fields: [categoryId], references: [id])
 
   @@map("products")
 }
@@ -43,4 +45,12 @@ model User {
 enum Role {
   USER
   ADMIN
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  products  Product[]
+
+  @@map("categories")
 }
