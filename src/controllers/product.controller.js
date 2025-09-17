@@ -2,7 +2,8 @@ const ProductService = require("../services/product.service");
 
 exports.getAllProducts = async (req, res) => {
   try {
-    const products = await ProductService.getAllProducts();
+    const queryParams = req.query;
+    const products = await ProductService.getAllProducts(queryParams);
     res.json(products);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch products' });
@@ -65,6 +66,19 @@ exports.deleteProduct = async (req, res) => {
   } catch (error) {
     console.error('Error deleting product:', error);
     res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+exports.searchProducts = async (req, res) => {
+  try {
+    const { searchTerm } = req.query;
+    if (!searchTerm) {
+      return res.status(400).json({ error: 'Search term is required' });
+    }
+    const products = await ProductService.searchProducts(searchTerm);
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ error: `Failed to search products ${err}` });
   }
 };
 

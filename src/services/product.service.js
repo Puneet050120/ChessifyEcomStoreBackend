@@ -2,9 +2,26 @@ const prisma = require('../models/prismaClient');
 
 class ProductService {
     
-  static async getAllProducts() {
+  static async getAllProducts(queryParams) {
+    const { name, size, color, categoryId, active, minPrice, maxPrice } = queryParams;
+
+    const where = {
+      active: active !== 'false', // Default to true unless explicitly set to false
+    };
+
+    if (name) where.name = { contains: name, mode: 'insensitive' };
+    if (size) where.size = size;
+    if (color) where.color = color;
+    if (categoryId) where.categoryId = parseInt(categoryId);
+
+    if (minPrice || maxPrice) {
+      where.price = {};
+      if (minPrice) where.price.gte = parseFloat(minPrice);
+      if (maxPrice) where.price.lte = parseFloat(maxPrice);
+    }
+
     return await prisma.product.findMany({
-      where: { active: true },
+      where,
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -100,6 +117,20 @@ class ProductService {
     });
 
     return { insertedCount: result.count };
+  }
+
+  static async searchProducts(searchTerm) {
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    return await prisma.product.findMany({
+      where: {
+        active: true,
+        OR: [
+          { name: { contains: lowerSearchTerm } },
+          { description: { contains: lowerSearchTerm } },
+        ],
+      },
+      orderBy: { createdAt: 'desc' },
+    });
   }
 
 }
