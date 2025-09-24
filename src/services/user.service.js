@@ -29,7 +29,7 @@ const login = async (email, password) => {
     expiresIn: '1h',
   });
 
-  return token;
+  return {user,token};
 };
 
 module.exports = {
